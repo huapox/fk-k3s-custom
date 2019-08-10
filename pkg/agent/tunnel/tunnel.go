@@ -71,10 +71,14 @@ func Setup(ctx context.Context, config *config.Node) error {
 
 	addresses := []string{config.ServerAddress}
 
-	endpoint, _ := client.CoreV1().Endpoints("default").Get("kubernetes", metav1.GetOptions{})
+	/*endpoint, _ := client.CoreV1().Endpoints("default").Get("kubernetes", metav1.GetOptions{})
 	if endpoint != nil {
 		addresses = getAddresses(endpoint)
-	}
+
+		if onChange != nil {
+			onChange(addresses)
+		}
+	}*/
 
 	disconnect := map[string]context.CancelFunc{}
 
@@ -108,13 +112,14 @@ func Setup(ctx context.Context, config *config.Node) error {
 						watch.Stop()
 						continue connect
 					}
-					endpoint, ok := ev.Object.(*v1.Endpoints)
+					/*endpoint, ok := ev.Object.(*v1.Endpoints)
 					if !ok {
 						logrus.Errorf("Tunnel could not case event object to endpoint: %v", ev)
 						continue watching
-					}
+					}*/
 
-					newAddresses := getAddresses(endpoint)
+					//newAddresses := getAddresses(endpoint)
+					newAddresses := []string{config.ServerAddress}
 					if reflect.DeepEqual(newAddresses, addresses) {
 						continue watching
 					}
